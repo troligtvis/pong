@@ -1,4 +1,4 @@
-use crate::{na, Context, GameResult, KeyCode, graphics, keyboard, constants::*, util::Util, collidable::Collidable};
+use crate::{na, Context, KeyCode, graphics, keyboard, constants::*, util::Util, collidable::Collidable};
 
 pub struct Controls {
     up_key: KeyCode,
@@ -43,7 +43,7 @@ impl Player {
         &mut self, 
         ctx: &mut Context, 
         dt: f32
-    ) -> GameResult {
+    ) {
         if keyboard::is_key_pressed(ctx, self.controls.up_key) {
             self.paddle.move_direction(ctx, Direction::Up, dt);
         }
@@ -51,15 +51,18 @@ impl Player {
         if keyboard::is_key_pressed(ctx, self.controls.down_key) {
             self.paddle.move_direction(ctx, Direction::Down, dt);
         }
-
-        Ok(())
     }
 
-    pub fn draw(&self, ctx: &mut Context) -> GameResult {
+    pub fn draw(&self, ctx: &mut Context) {
         let mut draw_param = graphics::DrawParam::default();
         draw_param.dest = self.paddle.position.into(); 
 
-        graphics::draw(ctx, self.paddle.get_mesh(), draw_param)
+        graphics::draw(
+            ctx, 
+            self.paddle.get_mesh(), 
+            draw_param
+        )
+        .unwrap();
     }
 }
 
@@ -75,10 +78,19 @@ impl Paddle {
         x: f32, 
         y: f32
     ) -> Self {
-        // Extract ctx, pass in mesh instead
 
-        let rect = graphics::Rect::new(-PADDLE_WIDTH_HALF, -PADDLE_HEIGHT_HALF, PADDLE_WIDTH, PADDLE_HEIGHT);
-        let mesh = graphics::Mesh::new_rectangle(ctx, graphics::DrawMode::fill(), rect, graphics::WHITE).unwrap();
+        let rect = graphics::Rect::new(
+            -PADDLE_WIDTH_HALF, 
+            -PADDLE_HEIGHT_HALF, 
+            PADDLE_WIDTH, 
+            PADDLE_HEIGHT);
+        let mesh = graphics::Mesh::new_rectangle(
+            ctx, 
+            graphics::DrawMode::fill(),
+            rect, 
+            graphics::WHITE
+        )
+        .unwrap();
         
         Self {
             position: na::Point2::new(x, y),
@@ -97,8 +109,8 @@ impl Paddle {
             Direction::Down => self.position.y += PADDLE_SPEED * dt,
         };
         
-        let screen_h = Util::get_bounds(ctx).1;
-        Util::clamp(&mut self.position.y, PADDLE_HEIGHT_HALF, screen_h - PADDLE_HEIGHT_HALF);
+        let scr_height = graphics::drawable_size(ctx).1;
+        Util::clamp(&mut self.position.y, PADDLE_HEIGHT_HALF, scr_height - PADDLE_HEIGHT_HALF);
     }
 
     pub fn get_mesh(&self) -> &graphics::Mesh {

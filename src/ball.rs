@@ -1,4 +1,4 @@
-use crate::{na, Context, GameResult, graphics, constants::*, util::Util, collidable::Collidable};
+use crate::{na, Context, graphics, constants::*, util::Util, collidable::Collidable};
 
 pub struct Ball {
     pub position: na::Point2<f32>,
@@ -9,8 +9,18 @@ pub struct Ball {
 impl Ball {
 
     pub fn new(ctx: &mut Context, x: f32, y: f32) -> Self {
-        let rect = graphics::Rect::new(-BALL_SIZE_HALF, -BALL_SIZE_HALF, BALL_SIZE, BALL_SIZE);
-        let mesh = graphics::Mesh::new_rectangle(ctx, graphics::DrawMode::fill(), rect, graphics::WHITE).unwrap();
+        let rect = graphics::Rect::new(
+            -BALL_SIZE_HALF, 
+            -BALL_SIZE_HALF, 
+            BALL_SIZE, 
+            BALL_SIZE);
+        let mesh = graphics::Mesh::new_rectangle(
+            ctx, 
+            graphics::DrawMode::fill(), 
+            rect, 
+            graphics::WHITE
+        )
+        .unwrap();
 
         let mut velocity = na::Vector2::new(0., 0.);
         Util::randomize_vec(&mut velocity, BALL_SPEED, BALL_SPEED);
@@ -27,18 +37,18 @@ impl Ball {
     }
 
     pub fn reset(&mut self, ctx: &mut Context) {
-        let (scr_w, scr_h) = Util::get_bounds(ctx);
-        self.position.x = scr_w * 0.5;
-        self.position.y = scr_h * 0.5;
+        let (scr_width, scr_height) = graphics::drawable_size(ctx);
+        self.position.x = scr_width * 0.5;
+        self.position.y = scr_height * 0.5;
         Util::randomize_vec(&mut self.velocity, BALL_SPEED, BALL_SPEED);
     }
 
-    pub fn update(&mut self, ctx: &mut Context, dt: f32) -> GameResult { 
+    pub fn update(&mut self, ctx: &mut Context, dt: f32) { 
         self.position += self.velocity * dt;
 
-        let (scr_w, scr_h) = Util::get_bounds(ctx);
+        let (scr_width, scr_height) = graphics::drawable_size(ctx);
 
-        if self.position.x < 0.0 || self.position.x > scr_w {
+        if self.position.x < 0.0 || self.position.x > scr_width {
             self.reset(ctx);
         }
 
@@ -46,19 +56,22 @@ impl Ball {
         if self.position.y < BALL_SIZE_HALF {
             self.position.y = BALL_SIZE_HALF;
             self.velocity.y = self.velocity.y.abs();
-        } else if self.position.y > scr_h - BALL_SIZE_HALF {
-            self.position.y = scr_h - BALL_SIZE_HALF;
+        } else if self.position.y > scr_height - BALL_SIZE_HALF {
+            self.position.y = scr_height - BALL_SIZE_HALF;
             self.velocity.y = -self.velocity.y.abs();
         }
-
-        Ok(())
     }
 
-    pub fn draw(&self, ctx: &mut Context) -> GameResult {
+    pub fn draw(&self, ctx: &mut Context) {
         let mut draw_param = graphics::DrawParam::default();
         draw_param.dest = self.position.into(); 
 
-        graphics::draw(ctx, self.get_mesh(), draw_param)
+        graphics::draw(
+            ctx, 
+            self.get_mesh(), 
+            draw_param
+        )
+        .unwrap();
     }
 }
 

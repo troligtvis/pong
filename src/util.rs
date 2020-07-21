@@ -1,13 +1,9 @@
-use crate::{na, Context, graphics};
+use crate::na;
 use rand::{self, thread_rng, Rng};
 
 pub struct Util { }
 
 impl Util {
-
-    pub fn get_bounds(ctx: &mut Context) -> (f32, f32) {
-        graphics::drawable_size(ctx)
-    }
 
     pub fn clamp(value: &mut f32, low: f32, high: f32) {
         if *value < low {

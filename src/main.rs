@@ -1,59 +1,39 @@
+use std::{env, path};
+
 use ggez;
 use ggez::{Context, GameResult};
 use ggez::graphics;
 use ggez::nalgebra as na;
 use ggez::event;
-use ggez::input::keyboard::{self, KeyCode};
+use ggez::input::keyboard::{self, KeyCode, KeyMods};
 
 mod constants;
 mod util;
 mod player;
 mod ball;
 mod collidable;
+mod scenes;
+mod world;
 
-use collidable::Collidable;
-use constants::*;
 use player::{Player, Paddle, Controls};
 use ball::Ball;
-use util::Util;
-
-pub trait Scene<W> {
-    fn update(&mut self, ctx: &mut Context, world: &mut W) -> Option<Box<dyn Scene<W>>>;
-    fn draw(&mut self, ctx: &mut Context, world: &mut W);
-    fn input(&mut self, world: &mut W, keycode: KeyCode, pressed: bool, repeat: bool);
-    fn name(&self) -> &str;
-}
+use scenes::*;
+use world::World;
 
 struct MainState {
-    player_1: Player,
-    player_2: Player,
-    ball: Ball,
+    world: World,
+    current_scene: Box<dyn Scene<World>>,
 }
 
 impl MainState {
     pub fn new(ctx: &mut Context) -> Self {
-        let (scr_w, screen_h) = Util::get_bounds(ctx);
-        let (scr_w_half, screen_h_half) = (scr_w * 0.5, screen_h * 0.5);
+        let initial_scene = Box::new(scenes::menu::MenuScene::new(ctx));
 
-        // Setup player 1
-        let player_1 = Player::new(
-            Controls::new(KeyCode::W, KeyCode::S),
-            Paddle::new(ctx, PADDLE_WIDTH_HALF + PADDING, screen_h_half)
-        );
-
-        // Setup player 2
-        let player_2 = Player::new(
-            Controls::new(KeyCode::Up, KeyCode::Down),
-            Paddle::new(ctx, scr_w - PADDLE_WIDTH_HALF - PADDING, screen_h_half),
-        );
-
-        // Setup ball
-        let ball = Ball::new(ctx, scr_w_half, screen_h_half);
+        let world = World::new(ctx);
 
         MainState {
-            player_1,
-            player_2,
-            ball,
+            world,
+            current_scene: initial_scene,
         }
     }
 }
@@ -61,40 +41,64 @@ impl MainState {
 impl event::EventHandler for MainState {
     fn update(&mut self, ctx: &mut Context) -> GameResult {
         let dt = ggez::timer::delta(ctx).as_secs_f32();
+        self.world.update_delta_time(dt);
 
-        self.player_1.update(ctx, dt)?;
-        self.player_2.update(ctx, dt)?;
-
-        self.ball.update(ctx, dt)?;
-
-        // Collision check
-        if self.player_1.paddle.check_collision(&self.ball) {
-            self.ball.velocity.x = self.ball.velocity.x.abs();
-        }
-
-        if self.player_2.paddle.check_collision(&self.ball) {
-            self.ball.velocity.x = -self.ball.velocity.x.abs();
-        }
+        if let Some(next_scene) = self.current_scene.update(ctx, &mut self.world) {
+            self.current_scene = next_scene
+        } 
 
         Ok(())
     }
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
-        graphics::clear(ctx, graphics::BLACK);
+        graphics::clear(ctx, [0.0, 0.0, 0.0, 1.0].into());
 
-        self.player_1.draw(ctx)?;
-        self.player_2.draw(ctx)?;
-
-        self.ball.draw(ctx)?;
+        self.current_scene.draw(ctx, &mut self.world);
 
         graphics::present(ctx)?;
         Ok(())
     }
+
+    fn key_down_event(
+        &mut self,
+        _ctx: &mut Context,
+        keycode: KeyCode,
+        _keymod: KeyMods,
+        repeat: bool,
+    ) {
+        if keycode == KeyCode::Escape {
+            event::quit(_ctx)
+        }
+
+        self.current_scene.input(&mut self.world, keycode, true, repeat)
+    }
+
+    fn key_up_event(
+        &mut self,
+        _ctx: &mut Context,
+        keycode: KeyCode,
+        _keymod: KeyMods
+    ) {
+        self.current_scene.input(&mut self.world, keycode, false, false);    
+    }
 }
 
 fn main() -> GameResult {
-    let cb = ggez::ContextBuilder::new("Pong", "Troligtvis");
-    let (ctx, event_loop) = &mut cb.build()?;
+    let resource_dir = if let Ok(manifest_dir) = env::var("CARGO_MANIFEST_DIR") {
+        let mut path = path::PathBuf::from(manifest_dir);
+        path.push("resources");
+        path
+    } else {
+        path::PathBuf::from("./resources")
+    };
+
+    let c = ggez::conf::Conf::new();
+    let (ref mut ctx, ref mut event_loop) = ggez::ContextBuilder::new("Pong", "Troligtvis")
+        .add_resource_path(resource_dir)
+        .conf(c)
+        .build()
+        .unwrap();
+
     graphics::set_window_title(ctx, "PONG");
 
     let mut state = MainState::new(ctx);
