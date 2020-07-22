@@ -1,5 +1,5 @@
-pub mod menu;
 pub mod game;
+pub mod menu;
 
 use crate::{Context, KeyCode};
 

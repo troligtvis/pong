@@ -1,10 +1,9 @@
 use crate::na;
 use rand::{self, thread_rng, Rng};
 
-pub struct Util { }
+pub struct Util {}
 
 impl Util {
-
     pub fn clamp(value: &mut f32, low: f32, high: f32) {
         if *value < low {
             *value = low;

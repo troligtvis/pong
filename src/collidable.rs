@@ -1,7 +1,6 @@
-use crate::{na};
+use crate::na;
 
 pub trait Collidable {
-    
     fn get_position(&self) -> na::Point2<f32>;
     fn get_size(&self) -> (f32, f32);
 
@@ -9,7 +8,7 @@ pub trait Collidable {
         let r1x = self.get_position().x;
         let r1y = self.get_position().y;
         let (r1w, r1h) = self.get_size();
-        
+
         let r2x = other.get_position().x;
         let r2y = other.get_position().y;
         let (r2w, r2h) = self.get_size();

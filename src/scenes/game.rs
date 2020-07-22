@@ -1,22 +1,15 @@
-use crate::{Context, Scene, KeyCode, World, collidable::Collidable};
+use crate::{collidable::Collidable, Context, KeyCode, Scene, World};
 
-pub struct GameScene {
-
-}
+pub struct GameScene {}
 
 impl GameScene {
-    pub fn new(_ctx: &mut Context,) -> Self {
+    pub fn new(_ctx: &mut Context) -> Self {
         Self {}
     }
 }
 
 impl Scene<World> for GameScene {
-    fn update(
-        &mut self, 
-        ctx: &mut Context, 
-        world: &mut World
-    ) -> Option<Box<dyn Scene<World>>> { 
-
+    fn update(&mut self, ctx: &mut Context, world: &mut World) -> Option<Box<dyn Scene<World>>> {
         let dt = world.get_dt();
         world.player_1.update(ctx, dt);
         world.player_2.update(ctx, dt);
@@ -35,25 +28,13 @@ impl Scene<World> for GameScene {
         None
     }
 
-    fn draw(
-        &mut self, 
-        ctx: &mut Context, 
-        world: &mut World
-    ) {
+    fn draw(&mut self, ctx: &mut Context, world: &mut World) {
         world.player_1.draw(ctx);
         world.player_2.draw(ctx);
         world.ball.draw(ctx);
     }
 
-    fn input(
-        &mut self, 
-        _world: &mut World, 
-        _keycode: KeyCode, 
-        _pressed: bool, 
-        _repeat: bool
-    ) {
-
-    }
+    fn input(&mut self, _world: &mut World, _keycode: KeyCode, _pressed: bool, _repeat: bool) {}
 
     fn name(&self) -> &str {
         "Game Scene"

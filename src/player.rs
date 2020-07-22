@@ -1,4 +1,6 @@
-use crate::{na, Context, KeyCode, graphics, keyboard, constants::*, util::Util, collidable::Collidable};
+use crate::{
+    collidable::Collidable, constants::*, graphics, keyboard, na, util::Util, Context, KeyCode,
+};
 
 pub struct Controls {
     up_key: KeyCode,
@@ -6,15 +8,8 @@ pub struct Controls {
 }
 
 impl Controls {
-
-    pub fn new(
-        up_key: KeyCode, 
-        down_key: KeyCode
-    ) -> Self {
-        Controls {
-            up_key,
-            down_key,
-        }
+    pub fn new(up_key: KeyCode, down_key: KeyCode) -> Self {
+        Controls { up_key, down_key }
     }
 }
 
@@ -30,20 +25,15 @@ pub struct Player {
 }
 
 impl Player {
-
     pub fn new(controls: Controls, paddle: Paddle) -> Self {
         Self {
             score: 0,
-            controls, 
+            controls,
             paddle,
         }
     }
 
-    pub fn update(
-        &mut self, 
-        ctx: &mut Context, 
-        dt: f32
-    ) {
+    pub fn update(&mut self, ctx: &mut Context, dt: f32) {
         if keyboard::is_key_pressed(ctx, self.controls.up_key) {
             self.paddle.move_direction(ctx, Direction::Up, dt);
         }
@@ -55,14 +45,9 @@ impl Player {
 
     pub fn draw(&self, ctx: &mut Context) {
         let mut draw_param = graphics::DrawParam::default();
-        draw_param.dest = self.paddle.position.into(); 
+        draw_param.dest = self.paddle.position.into();
 
-        graphics::draw(
-            ctx, 
-            self.paddle.get_mesh(), 
-            draw_param
-        )
-        .unwrap();
+        graphics::draw(ctx, self.paddle.get_mesh(), draw_param).unwrap();
     }
 }
 
@@ -72,45 +57,35 @@ pub struct Paddle {
 }
 
 impl Paddle {
-
-    pub fn new(
-        ctx: &mut Context, 
-        x: f32, 
-        y: f32
-    ) -> Self {
-
+    pub fn new(ctx: &mut Context, x: f32, y: f32) -> Self {
         let rect = graphics::Rect::new(
-            -PADDLE_WIDTH_HALF, 
-            -PADDLE_HEIGHT_HALF, 
-            PADDLE_WIDTH, 
-            PADDLE_HEIGHT);
-        let mesh = graphics::Mesh::new_rectangle(
-            ctx, 
-            graphics::DrawMode::fill(),
-            rect, 
-            graphics::WHITE
-        )
-        .unwrap();
-        
+            -PADDLE_WIDTH_HALF,
+            -PADDLE_HEIGHT_HALF,
+            PADDLE_WIDTH,
+            PADDLE_HEIGHT,
+        );
+        let mesh =
+            graphics::Mesh::new_rectangle(ctx, graphics::DrawMode::fill(), rect, graphics::WHITE)
+                .unwrap();
+
         Self {
             position: na::Point2::new(x, y),
             mesh,
         }
     }
 
-    fn move_direction(
-        &mut self, 
-        ctx: &mut Context, 
-        direction: Direction, 
-        dt: f32
-    ) {
+    fn move_direction(&mut self, ctx: &mut Context, direction: Direction, dt: f32) {
         match direction {
             Direction::Up => self.position.y -= PADDLE_SPEED * dt,
             Direction::Down => self.position.y += PADDLE_SPEED * dt,
         };
-        
+
         let scr_height = graphics::drawable_size(ctx).1;
-        Util::clamp(&mut self.position.y, PADDLE_HEIGHT_HALF, scr_height - PADDLE_HEIGHT_HALF);
+        Util::clamp(
+            &mut self.position.y,
+            PADDLE_HEIGHT_HALF,
+            scr_height - PADDLE_HEIGHT_HALF,
+        );
     }
 
     pub fn get_mesh(&self) -> &graphics::Mesh {

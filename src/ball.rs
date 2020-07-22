@@ -1,4 +1,4 @@
-use crate::{na, Context, graphics, constants::*, util::Util, collidable::Collidable};
+use crate::{collidable::Collidable, constants::*, graphics, na, util::Util, Context};
 
 pub struct Ball {
     pub position: na::Point2<f32>,
@@ -7,24 +7,15 @@ pub struct Ball {
 }
 
 impl Ball {
-
     pub fn new(ctx: &mut Context, x: f32, y: f32) -> Self {
-        let rect = graphics::Rect::new(
-            -BALL_SIZE_HALF, 
-            -BALL_SIZE_HALF, 
-            BALL_SIZE, 
-            BALL_SIZE);
-        let mesh = graphics::Mesh::new_rectangle(
-            ctx, 
-            graphics::DrawMode::fill(), 
-            rect, 
-            graphics::WHITE
-        )
-        .unwrap();
+        let rect = graphics::Rect::new(-BALL_SIZE_HALF, -BALL_SIZE_HALF, BALL_SIZE, BALL_SIZE);
+        let mesh =
+            graphics::Mesh::new_rectangle(ctx, graphics::DrawMode::fill(), rect, graphics::WHITE)
+                .unwrap();
 
         let mut velocity = na::Vector2::new(0., 0.);
         Util::randomize_vec(&mut velocity, BALL_SPEED, BALL_SPEED);
-        
+
         Self {
             position: na::Point2::new(x, y),
             velocity,
@@ -43,7 +34,7 @@ impl Ball {
         Util::randomize_vec(&mut self.velocity, BALL_SPEED, BALL_SPEED);
     }
 
-    pub fn update(&mut self, ctx: &mut Context, dt: f32) { 
+    pub fn update(&mut self, ctx: &mut Context, dt: f32) {
         self.position += self.velocity * dt;
 
         let (scr_width, scr_height) = graphics::drawable_size(ctx);
@@ -52,7 +43,7 @@ impl Ball {
             self.reset(ctx);
         }
 
-        // Ceiling bounce 
+        // Ceiling bounce
         if self.position.y < BALL_SIZE_HALF {
             self.position.y = BALL_SIZE_HALF;
             self.velocity.y = self.velocity.y.abs();
@@ -64,19 +55,13 @@ impl Ball {
 
     pub fn draw(&self, ctx: &mut Context) {
         let mut draw_param = graphics::DrawParam::default();
-        draw_param.dest = self.position.into(); 
+        draw_param.dest = self.position.into();
 
-        graphics::draw(
-            ctx, 
-            self.get_mesh(), 
-            draw_param
-        )
-        .unwrap();
+        graphics::draw(ctx, self.get_mesh(), draw_param).unwrap();
     }
 }
 
 impl Collidable for Ball {
-
     fn get_position(&self) -> na::Point2<f32> {
         self.position
     }

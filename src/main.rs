@@ -1,22 +1,22 @@
 use std::{env, path};
 
 use ggez;
-use ggez::{Context, GameResult};
-use ggez::graphics;
-use ggez::nalgebra as na;
 use ggez::event;
+use ggez::graphics;
 use ggez::input::keyboard::{self, KeyCode, KeyMods};
+use ggez::nalgebra as na;
+use ggez::{Context, GameResult};
 
-mod constants;
-mod util;
-mod player;
 mod ball;
 mod collidable;
+mod constants;
+mod player;
 mod scenes;
+mod util;
 mod world;
 
-use player::{Player, Paddle, Controls};
 use ball::Ball;
+use player::{Controls, Paddle, Player};
 use scenes::*;
 use world::World;
 
@@ -45,7 +45,7 @@ impl event::EventHandler for MainState {
 
         if let Some(next_scene) = self.current_scene.update(ctx, &mut self.world) {
             self.current_scene = next_scene
-        } 
+        }
 
         Ok(())
     }
@@ -70,16 +70,13 @@ impl event::EventHandler for MainState {
             event::quit(_ctx)
         }
 
-        self.current_scene.input(&mut self.world, keycode, true, repeat)
+        self.current_scene
+            .input(&mut self.world, keycode, true, repeat)
     }
 
-    fn key_up_event(
-        &mut self,
-        _ctx: &mut Context,
-        keycode: KeyCode,
-        _keymod: KeyMods
-    ) {
-        self.current_scene.input(&mut self.world, keycode, false, false);    
+    fn key_up_event(&mut self, _ctx: &mut Context, keycode: KeyCode, _keymod: KeyMods) {
+        self.current_scene
+            .input(&mut self.world, keycode, false, false);
     }
 }
 
