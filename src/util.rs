@@ -15,14 +15,7 @@ impl Util {
 
     pub fn randomize_vec(vec: &mut na::Vector2<f32>, x: f32, y: f32) {
         let mut rng = thread_rng();
-        vec.x = match rng.gen_bool(0.5) {
-            true => x,
-            false => -x,
-        };
-
-        vec.y = match rng.gen_bool(0.5) {
-            true => y,
-            false => -y,
-        };
+        vec.x = if rng.gen_bool(0.5) { x } else { -x };
+        vec.y = if rng.gen_bool(0.5) { y } else { -y };
     }
 }
