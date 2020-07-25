@@ -13,8 +13,6 @@ pub trait Collidable {
         let r2y = other.get_position().y;
         let (r2w, r2h) = self.get_size();
 
-        let result = r1x + r1w >= r2x && r1x <= r2x + r2w && r1y + r1h >= r2y && r1y <= r2y + r2h;
-
-        result
+        r1x + r1w >= r2x && r1x <= r2x + r2w && r1y + r1h >= r2y && r1y <= r2y + r2h
     }
 }

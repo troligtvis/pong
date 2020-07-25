@@ -37,11 +37,7 @@ impl Ball {
     pub fn update(&mut self, ctx: &mut Context, dt: f32) {
         self.position += self.velocity * dt;
 
-        let (scr_width, scr_height) = graphics::drawable_size(ctx);
-
-        if self.position.x < 0.0 || self.position.x > scr_width {
-            self.reset(ctx);
-        }
+        let scr_height = graphics::drawable_size(ctx).1;
 
         // Ceiling bounce
         if self.position.y < BALL_SIZE_HALF {

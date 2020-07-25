@@ -3,6 +3,7 @@ use std::{env, path};
 use ggez;
 use ggez::event;
 use ggez::graphics;
+use ggez::graphics::{DrawParam, Text};
 use ggez::input::keyboard::{self, KeyCode, KeyMods};
 use ggez::nalgebra as na;
 use ggez::{Context, GameResult};
@@ -29,7 +30,8 @@ impl MainState {
     pub fn new(ctx: &mut Context) -> Self {
         let initial_scene = Box::new(scenes::menu::MenuScene::new(ctx));
 
-        let world = World::new(ctx);
+        let max_score = 5;
+        let world = World::new(ctx, max_score);
 
         MainState {
             world,

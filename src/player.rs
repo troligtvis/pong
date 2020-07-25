@@ -19,17 +19,19 @@ enum Direction {
 }
 
 pub struct Player {
-    pub score: i32,
+    score: i32,
     controls: Controls,
     pub paddle: Paddle,
+    name: String,
 }
 
 impl Player {
-    pub fn new(controls: Controls, paddle: Paddle) -> Self {
+    pub fn new(controls: Controls, paddle: Paddle, name: String) -> Self {
         Self {
             score: 0,
             controls,
             paddle,
+            name,
         }
     }
 
@@ -48,6 +50,18 @@ impl Player {
         draw_param.dest = self.paddle.position.into();
 
         graphics::draw(ctx, self.paddle.get_mesh(), draw_param).unwrap();
+    }
+
+    pub fn increment_score(&mut self) {
+        self.score += 1;
+    }
+
+    pub fn get_score(&self) -> i32 {
+        self.score
+    }
+
+    pub fn get_name(&self) -> &str {
+        self.name.as_str()
     }
 }
 
