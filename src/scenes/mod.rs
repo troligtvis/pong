@@ -1,3 +1,4 @@
+pub mod end;
 pub mod game;
 pub mod menu;
 

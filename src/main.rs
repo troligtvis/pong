@@ -75,11 +75,6 @@ impl event::EventHandler for MainState {
         self.current_scene
             .input(&mut self.world, keycode, true, repeat)
     }
-
-    fn key_up_event(&mut self, _ctx: &mut Context, keycode: KeyCode, _keymod: KeyMods) {
-        self.current_scene
-            .input(&mut self.world, keycode, false, false);
-    }
 }
 
 fn main() -> GameResult {

@@ -1,6 +1,6 @@
 use crate::{
-    collidable::Collidable, constants, graphics, na, Context, DrawParam, KeyCode, Scene, Text,
-    World,
+    collidable::Collidable, constants, end::EndScene as es, graphics, na, Context, DrawParam,
+    KeyCode, Scene, Text, World,
 };
 
 pub struct GameScene {}
@@ -29,8 +29,7 @@ impl Scene<World> for GameScene {
         }
 
         if let Some(winner) = world.check_score(ctx) {
-            println!("{} is the winner!", winner);
-            // todo: present win screen
+            return Some(Box::new(es::new(ctx, String::from(winner))));
         }
 
         None

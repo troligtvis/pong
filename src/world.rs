@@ -65,13 +65,43 @@ impl World {
         }
 
         if self.player_1.get_score() >= self.max_score {
+            self.reset(ctx);
             return Some(self.player_1.get_name());
         }
 
         if self.player_2.get_score() >= self.max_score {
+            self.reset(ctx);
             return Some(self.player_2.get_name());
         }
 
         None
+    }
+
+    // Reset both player 1 and player 2 to origin position and 0 score
+    // FIXME: - remove duplicate code for init players
+    pub fn reset(&mut self, ctx: &mut Context) {
+        let (scr_width, scr_height) = graphics::drawable_size(ctx);
+        let screen_height_half = scr_height * 0.5;
+
+        // Setup player 1
+        let player_1 = Player::new(
+            Controls::new(KeyCode::W, KeyCode::S),
+            Paddle::new(ctx, PADDLE_WIDTH_HALF + PADDING, screen_height_half),
+            String::from("Player 1"),
+        );
+
+        // Setup player 2
+        let player_2 = Player::new(
+            Controls::new(KeyCode::Up, KeyCode::Down),
+            Paddle::new(
+                ctx,
+                scr_width - PADDLE_WIDTH_HALF - PADDING,
+                screen_height_half,
+            ),
+            String::from("Player 2"),
+        );
+
+        self.player_1 = player_1;
+        self.player_2 = player_2;
     }
 }
