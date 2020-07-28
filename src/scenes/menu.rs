@@ -133,12 +133,12 @@ impl Scene<World> for MenuScene {
 
     fn input(&mut self, _world: &mut World, keycode: KeyCode, _pressed: bool, _repeat: bool) {
         match keycode {
-            KeyCode::Space | KeyCode::Return => {
+            KeyCode::Space | KeyCode::Return | KeyCode::D | KeyCode::Right => {
                 if self.selected_item_index == 0 {
                     self.is_done = true;
                 }
             }
-            KeyCode::Up => {
+            KeyCode::Up | KeyCode::W => {
                 let item_count = self.menu_items.len() as i32;
                 self.selected_item_index = if self.selected_item_index == 0 {
                     item_count - 1
@@ -146,7 +146,7 @@ impl Scene<World> for MenuScene {
                     (self.selected_item_index - 1) % item_count
                 };
             }
-            KeyCode::Down => {
+            KeyCode::Down | KeyCode::S => {
                 let item_count = self.menu_items.len() as i32;
                 self.selected_item_index = (self.selected_item_index + 1) % item_count;
             }
