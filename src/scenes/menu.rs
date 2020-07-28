@@ -1,4 +1,4 @@
-use crate::{game::GameScene as gs, graphics, na, Context, KeyCode, Scene, World};
+use crate::{game::GameScene as gs, graphics, na, Context, KeyCode, Paddle, Scene, World};
 
 pub struct MenuScene {
     title_text: graphics::Text,
@@ -72,14 +72,7 @@ impl Scene<World> for MenuScene {
         .unwrap();
 
         for (index, item) in self.menu_items.iter_mut().enumerate() {
-            if index as i32 == self.selected_item_index {
-                item.fragments_mut()[0].color = Some(graphics::WHITE);
-                item.fragments_mut()[0].scale = Some(graphics::Scale::uniform(42.0));
-            } else {
-                item.fragments_mut()[0].color = Some(self.silver_color);
-                item.fragments_mut()[0].scale = Some(graphics::Scale::uniform(36.0));
-            }
-
+            let width = item.width(ctx) as f32;
             let height = item.height(ctx) as f32;
 
             let dest = na::Point2::new(
@@ -88,6 +81,51 @@ impl Scene<World> for MenuScene {
                     + ((title_text_height + 20.0) - (height + 20.0))
                     + (index as f32 * 50.),
             );
+
+            if index as i32 == self.selected_item_index {
+                item.fragments_mut()[0].color = Some(graphics::WHITE);
+
+                let item_height_half = height * 0.5;
+                let paddle_size = (6., 20.);
+
+                let left_indicator_paddle = Paddle::new(
+                    ctx,
+                    dest.x - item_height_half,
+                    dest.y + item_height_half - (paddle_size.1 * 0.5),
+                    graphics::Rect::new(
+                        dest.x - item_height_half,
+                        dest.y + item_height_half - (paddle_size.1 * 0.5),
+                        paddle_size.0,
+                        paddle_size.1,
+                    ),
+                );
+                let right_indicator_paddle = Paddle::new(
+                    ctx,
+                    dest.x + width + item_height_half - paddle_size.0,
+                    dest.y + item_height_half - (paddle_size.1 * 0.5),
+                    graphics::Rect::new(
+                        dest.x + width + item_height_half - paddle_size.0,
+                        dest.y + item_height_half - (paddle_size.1 * 0.5),
+                        paddle_size.0,
+                        paddle_size.1,
+                    ),
+                );
+
+                graphics::draw(
+                    ctx,
+                    left_indicator_paddle.get_mesh(),
+                    graphics::DrawParam::default(),
+                )
+                .unwrap();
+                graphics::draw(
+                    ctx,
+                    right_indicator_paddle.get_mesh(),
+                    graphics::DrawParam::default(),
+                )
+                .unwrap();
+            } else {
+                item.fragments_mut()[0].color = Some(self.silver_color);
+            }
 
             graphics::draw(ctx, item, graphics::DrawParam::new().dest(dest)).unwrap();
         }

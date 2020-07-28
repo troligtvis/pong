@@ -71,13 +71,7 @@ pub struct Paddle {
 }
 
 impl Paddle {
-    pub fn new(ctx: &mut Context, x: f32, y: f32) -> Self {
-        let rect = graphics::Rect::new(
-            -PADDLE_WIDTH_HALF,
-            -PADDLE_HEIGHT_HALF,
-            PADDLE_WIDTH,
-            PADDLE_HEIGHT,
-        );
+    pub fn new(ctx: &mut Context, x: f32, y: f32, rect: graphics::Rect) -> Self {
         let mesh =
             graphics::Mesh::new_rectangle(ctx, graphics::DrawMode::fill(), rect, graphics::WHITE)
                 .unwrap();

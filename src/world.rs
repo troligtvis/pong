@@ -13,10 +13,17 @@ impl World {
         let (scr_width, scr_height) = graphics::drawable_size(ctx);
         let (scr_width_half, screen_height_half) = (scr_width * 0.5, scr_height * 0.5);
 
+        let rect = graphics::Rect::new(
+            -PADDLE_WIDTH_HALF,
+            -PADDLE_HEIGHT_HALF,
+            PADDLE_WIDTH,
+            PADDLE_HEIGHT,
+        );
+
         // Setup player 1
         let player_1 = Player::new(
             Controls::new(KeyCode::W, KeyCode::S),
-            Paddle::new(ctx, PADDLE_WIDTH_HALF + PADDING, screen_height_half),
+            Paddle::new(ctx, PADDLE_WIDTH_HALF + PADDING, screen_height_half, rect),
             String::from("Player 1"),
         );
 
@@ -27,6 +34,7 @@ impl World {
                 ctx,
                 scr_width - PADDLE_WIDTH_HALF - PADDING,
                 screen_height_half,
+                rect,
             ),
             String::from("Player 2"),
         );
@@ -83,10 +91,17 @@ impl World {
         let (scr_width, scr_height) = graphics::drawable_size(ctx);
         let screen_height_half = scr_height * 0.5;
 
+        let rect = graphics::Rect::new(
+            -PADDLE_WIDTH_HALF,
+            -PADDLE_HEIGHT_HALF,
+            PADDLE_WIDTH,
+            PADDLE_HEIGHT,
+        );
+
         // Setup player 1
         let player_1 = Player::new(
             Controls::new(KeyCode::W, KeyCode::S),
-            Paddle::new(ctx, PADDLE_WIDTH_HALF + PADDING, screen_height_half),
+            Paddle::new(ctx, PADDLE_WIDTH_HALF + PADDING, screen_height_half, rect),
             String::from("Player 1"),
         );
 
@@ -97,6 +112,7 @@ impl World {
                 ctx,
                 scr_width - PADDLE_WIDTH_HALF - PADDING,
                 screen_height_half,
+                rect,
             ),
             String::from("Player 2"),
         );
