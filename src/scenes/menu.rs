@@ -2,28 +2,43 @@ use crate::{game::GameScene as gs, graphics, na, Context, KeyCode, Scene, World}
 
 pub struct MenuScene {
     title_text: graphics::Text,
-    begin_text: graphics::Text,
 
     is_done: bool,
+
+    selected_item_index: i32,
+    menu_items: Vec<graphics::Text>,
+
+    silver_color: graphics::Color,
 }
 
 impl MenuScene {
     pub fn new(ctx: &mut Context) -> Self {
+        let silver = graphics::Color::from_rgba(192, 192, 192, 255);
+
         let font = graphics::Font::new(ctx, "/DejaVuSerif.ttf").unwrap();
         let title_text_fragment = graphics::TextFragment::new("Pong-A-Long")
             .color(graphics::Color::from((192, 128, 64, 255)))
             .font(font)
             .scale(graphics::Scale::uniform(56.0));
 
-        let begin_text_fragment = graphics::TextFragment::new("Press space to begin")
-            .color(graphics::WHITE)
-            .font(font)
-            .scale(graphics::Scale::uniform(36.0));
+        let items: Vec<graphics::Text> = ["Play", "Options", "About", "Exit"]
+            .iter()
+            .map(|title| {
+                graphics::Text::new(
+                    graphics::TextFragment::new(*title)
+                        .color(silver)
+                        .font(font)
+                        .scale(graphics::Scale::uniform(36.0)),
+                )
+            })
+            .collect();
 
         Self {
             title_text: graphics::Text::new(title_text_fragment),
-            begin_text: graphics::Text::new(begin_text_fragment),
             is_done: false,
+            selected_item_index: 0,
+            menu_items: items,
+            silver_color: silver,
         }
     }
 }
@@ -56,26 +71,49 @@ impl Scene<World> for MenuScene {
         )
         .unwrap();
 
-        let begin_text_width = self.begin_text.width(ctx) as f32;
-        let begin_text_height = self.begin_text.height(ctx) as f32;
+        for (index, item) in self.menu_items.iter_mut().enumerate() {
+            if index as i32 == self.selected_item_index {
+                item.fragments_mut()[0].color = Some(graphics::WHITE);
+                item.fragments_mut()[0].scale = Some(graphics::Scale::uniform(42.0));
+            } else {
+                item.fragments_mut()[0].color = Some(self.silver_color);
+                item.fragments_mut()[0].scale = Some(graphics::Scale::uniform(36.0));
+            }
 
-        let begin_text_dest = na::Point2::new(
-            (scr_width as f32 / 2.0) - (begin_text_width / 2.0),
-            (scr_height as f32 / 2.0) + (title_text_height + 20.0) - (begin_text_height + 20.0),
-        );
+            let height = item.height(ctx) as f32;
 
-        graphics::draw(
-            ctx,
-            &self.begin_text,
-            graphics::DrawParam::new().dest(begin_text_dest),
-        )
-        .unwrap();
+            let dest = na::Point2::new(
+                (scr_width as f32 / 2.0) - (title_text_width as f32 / 2.0),
+                (scr_height as f32 / 2.0)
+                    + ((title_text_height + 20.0) - (height + 20.0))
+                    + (index as f32 * 50.),
+            );
+
+            graphics::draw(ctx, item, graphics::DrawParam::new().dest(dest)).unwrap();
+        }
     }
 
     fn input(&mut self, _world: &mut World, keycode: KeyCode, _pressed: bool, _repeat: bool) {
-        if keycode == KeyCode::Space {
-            self.is_done = true;
-        }
+        match keycode {
+            KeyCode::Space | KeyCode::Return => {
+                if self.selected_item_index == 0 {
+                    self.is_done = true;
+                }
+            }
+            KeyCode::Up => {
+                let item_count = self.menu_items.len() as i32;
+                self.selected_item_index = if self.selected_item_index == 0 {
+                    item_count - 1
+                } else {
+                    (self.selected_item_index - 1) % item_count
+                };
+            }
+            KeyCode::Down => {
+                let item_count = self.menu_items.len() as i32;
+                self.selected_item_index = (self.selected_item_index + 1) % item_count;
+            }
+            _ => {}
+        };
     }
 
     fn name(&self) -> &str {
