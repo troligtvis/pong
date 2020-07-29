@@ -9,6 +9,9 @@ pub struct MenuScene {
     menu_items: Vec<graphics::Text>,
 
     silver_color: graphics::Color,
+
+    left_indicator_paddle: Paddle,
+    right_indicator_paddle: Paddle,
 }
 
 impl MenuScene {
@@ -33,12 +36,27 @@ impl MenuScene {
             })
             .collect();
 
+        let paddle_size = (6., 20.);
+
+        let left_indicator_paddle = Paddle::new(
+            ctx,
+            na::Vector2::new(0., 0.),
+            graphics::Rect::new(0., 0., paddle_size.0, paddle_size.1),
+        );
+        let right_indicator_paddle = Paddle::new(
+            ctx,
+            na::Vector2::new(0., 0.),
+            graphics::Rect::new(0., 0., paddle_size.0, paddle_size.1),
+        );
+
         Self {
             title_text: graphics::Text::new(title_text_fragment),
             is_done: false,
             selected_item_index: 0,
             menu_items: items,
             silver_color: silver,
+            left_indicator_paddle,
+            right_indicator_paddle,
         }
     }
 }
@@ -82,45 +100,31 @@ impl Scene<World> for MenuScene {
                     + (index as f32 * 50.),
             );
 
+            let item_height_half = height * 0.5;
+
             if index as i32 == self.selected_item_index {
                 item.fragments_mut()[0].color = Some(graphics::WHITE);
 
-                let item_height_half = height * 0.5;
-                let paddle_size = (6., 20.);
-
-                let left_indicator_paddle = Paddle::new(
-                    ctx,
+                self.left_indicator_paddle.set_position(na::Point2::new(
                     dest.x - item_height_half,
-                    dest.y + item_height_half - (paddle_size.1 * 0.5),
-                    graphics::Rect::new(
-                        dest.x - item_height_half,
-                        dest.y + item_height_half - (paddle_size.1 * 0.5),
-                        paddle_size.0,
-                        paddle_size.1,
-                    ),
-                );
-                let right_indicator_paddle = Paddle::new(
-                    ctx,
-                    dest.x + width + item_height_half - paddle_size.0,
-                    dest.y + item_height_half - (paddle_size.1 * 0.5),
-                    graphics::Rect::new(
-                        dest.x + width + item_height_half - paddle_size.0,
-                        dest.y + item_height_half - (paddle_size.1 * 0.5),
-                        paddle_size.0,
-                        paddle_size.1,
-                    ),
-                );
+                    dest.y + item_height_half - (self.left_indicator_paddle.size.1 * 0.5),
+                ));
+
+                self.right_indicator_paddle.set_position(na::Point2::new(
+                    dest.x + width + item_height_half - self.right_indicator_paddle.size.0,
+                    dest.y + item_height_half - (self.right_indicator_paddle.size.1 * 0.5),
+                ));
 
                 graphics::draw(
                     ctx,
-                    left_indicator_paddle.get_mesh(),
-                    graphics::DrawParam::default(),
+                    self.left_indicator_paddle.get_mesh(),
+                    graphics::DrawParam::default().dest(self.left_indicator_paddle.get_position()),
                 )
                 .unwrap();
                 graphics::draw(
                     ctx,
-                    right_indicator_paddle.get_mesh(),
-                    graphics::DrawParam::default(),
+                    self.right_indicator_paddle.get_mesh(),
+                    graphics::DrawParam::default().dest(self.right_indicator_paddle.get_position()),
                 )
                 .unwrap();
             } else {

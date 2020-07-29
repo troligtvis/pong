@@ -47,7 +47,7 @@ impl Player {
 
     pub fn draw(&self, ctx: &mut Context) {
         let mut draw_param = graphics::DrawParam::default();
-        draw_param.dest = self.paddle.position.into();
+        draw_param.dest = self.paddle.get_position().into();
 
         graphics::draw(ctx, self.paddle.get_mesh(), draw_param).unwrap();
     }
@@ -66,18 +66,20 @@ impl Player {
 }
 
 pub struct Paddle {
-    pub position: na::Point2<f32>,
+    position: na::Point2<f32>,
+    pub size: (f32, f32),
     mesh: graphics::Mesh,
 }
 
 impl Paddle {
-    pub fn new(ctx: &mut Context, x: f32, y: f32, rect: graphics::Rect) -> Self {
+    pub fn new(ctx: &mut Context, coord: na::Vector2<f32>, rect: graphics::Rect) -> Self {
         let mesh =
             graphics::Mesh::new_rectangle(ctx, graphics::DrawMode::fill(), rect, graphics::WHITE)
                 .unwrap();
 
         Self {
-            position: na::Point2::new(x, y),
+            position: na::Point2::new(coord.x, coord.y),
+            size: (rect.w, rect.h),
             mesh,
         }
     }
@@ -89,15 +91,20 @@ impl Paddle {
         };
 
         let scr_height = graphics::drawable_size(ctx).1;
-        Util::clamp(
-            &mut self.position.y,
-            PADDLE_HEIGHT_HALF,
-            scr_height - PADDLE_HEIGHT_HALF,
-        );
+        let height_half = self.size.1 * 0.5;
+        Util::clamp(&mut self.position.y, height_half, scr_height - height_half);
     }
 
     pub fn get_mesh(&self) -> &graphics::Mesh {
         &self.mesh
+    }
+
+    pub fn set_position(&mut self, position: na::Point2<f32>) {
+        self.position = position;
+    }
+
+    pub fn get_position(&self) -> na::Point2<f32> {
+        self.position
     }
 }
 
@@ -107,6 +114,6 @@ impl Collidable for Paddle {
     }
 
     fn get_size(&self) -> (f32, f32) {
-        (PADDLE_WIDTH, PADDLE_HEIGHT)
+        self.size
     }
 }

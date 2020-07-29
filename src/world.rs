@@ -1,4 +1,4 @@
-use crate::{constants::*, graphics, Ball, Context, Controls, KeyCode, Paddle, Player};
+use crate::{constants::*, graphics, na, Ball, Context, Controls, KeyCode, Paddle, Player};
 
 pub struct World {
     pub player_1: Player,
@@ -23,7 +23,11 @@ impl World {
         // Setup player 1
         let player_1 = Player::new(
             Controls::new(KeyCode::W, KeyCode::S),
-            Paddle::new(ctx, PADDLE_WIDTH_HALF + PADDING, screen_height_half, rect),
+            Paddle::new(
+                ctx,
+                na::Vector2::new(PADDLE_WIDTH_HALF + PADDING, screen_height_half),
+                rect,
+            ),
             String::from("Player 1"),
         );
 
@@ -32,8 +36,7 @@ impl World {
             Controls::new(KeyCode::Up, KeyCode::Down),
             Paddle::new(
                 ctx,
-                scr_width - PADDLE_WIDTH_HALF - PADDING,
-                screen_height_half,
+                na::Vector2::new(scr_width - PADDLE_WIDTH_HALF - PADDING, screen_height_half),
                 rect,
             ),
             String::from("Player 2"),
@@ -101,7 +104,11 @@ impl World {
         // Setup player 1
         let player_1 = Player::new(
             Controls::new(KeyCode::W, KeyCode::S),
-            Paddle::new(ctx, PADDLE_WIDTH_HALF + PADDING, screen_height_half, rect),
+            Paddle::new(
+                ctx,
+                na::Vector2::new(PADDLE_WIDTH_HALF + PADDING, screen_height_half),
+                rect,
+            ),
             String::from("Player 1"),
         );
 
@@ -110,8 +117,7 @@ impl World {
             Controls::new(KeyCode::Up, KeyCode::Down),
             Paddle::new(
                 ctx,
-                scr_width - PADDLE_WIDTH_HALF - PADDING,
-                screen_height_half,
+                na::Vector2::new(scr_width - PADDLE_WIDTH_HALF - PADDING, screen_height_half),
                 rect,
             ),
             String::from("Player 2"),
