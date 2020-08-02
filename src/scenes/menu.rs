@@ -1,4 +1,6 @@
-use crate::{game::GameScene as gs, graphics, na, Context, KeyCode, Paddle, Scene, World};
+use crate::{
+    game::GameScene as gs, event, graphics, na, Context, KeyCode, Paddle, Scene, World
+};
 
 pub struct MenuScene {
     title_text: graphics::Text,
@@ -24,7 +26,8 @@ impl MenuScene {
             .font(font)
             .scale(graphics::Scale::uniform(56.0));
 
-        let items: Vec<graphics::Text> = ["Play", "Options", "About", "Exit"]
+        // TODO: - add "Options", "About"
+        let items: Vec<graphics::Text> = ["Play", "Exit"] 
             .iter()
             .map(|title| {
                 graphics::Text::new(
@@ -137,9 +140,11 @@ impl Scene<World> for MenuScene {
 
     fn input(&mut self, ctx: &mut Context, _world: &mut World, keycode: KeyCode, _pressed: bool, _repeat: bool) {
         match keycode {
-            KeyCode::Space | KeyCode::Return | KeyCode::D | KeyCode::Right => {
+            KeyCode::Space | KeyCode::Return | KeyCode::D | KeyCode::Right => {  
                 if self.selected_item_index == 0 {
                     self.is_done = true;
+                } else {
+                    event::quit(ctx);
                 }
             }
             KeyCode::Up | KeyCode::W => {
