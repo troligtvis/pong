@@ -135,7 +135,7 @@ impl Scene<World> for MenuScene {
         }
     }
 
-    fn input(&mut self, _world: &mut World, keycode: KeyCode, _pressed: bool, _repeat: bool) {
+    fn input(&mut self, ctx: &mut Context, _world: &mut World, keycode: KeyCode, _pressed: bool, _repeat: bool) {
         match keycode {
             KeyCode::Space | KeyCode::Return | KeyCode::D | KeyCode::Right => {
                 if self.selected_item_index == 0 {

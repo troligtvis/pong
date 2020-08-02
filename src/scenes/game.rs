@@ -56,7 +56,7 @@ impl Scene<World> for GameScene {
         graphics::draw(ctx, &score_text, draw_param).unwrap();
     }
 
-    fn input(&mut self, _world: &mut World, _keycode: KeyCode, _pressed: bool, _repeat: bool) {}
+    fn input(&mut self, _ctx: &mut Context, _world: &mut World, _keycode: KeyCode, _pressed: bool, _repeat: bool) {}
 
     fn name(&self) -> &str {
         "Game Scene"

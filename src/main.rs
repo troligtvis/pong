@@ -63,17 +63,17 @@ impl event::EventHandler for MainState {
 
     fn key_down_event(
         &mut self,
-        _ctx: &mut Context,
+        ctx: &mut Context,
         keycode: KeyCode,
         _keymod: KeyMods,
         repeat: bool,
     ) {
         if keycode == KeyCode::Escape {
-            event::quit(_ctx)
+            event::quit(ctx)
         }
 
         self.current_scene
-            .input(&mut self.world, keycode, true, repeat)
+            .input(ctx, &mut self.world, keycode, true, repeat)
     }
 }
 
