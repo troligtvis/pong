@@ -1,9 +1,9 @@
 # Pong-A-Long
-Atari's 1972 classic made with rust. 
+Atari's 1972 classic pong, made with rust. 
 
 # Background
 The project is first and foremost about learning `Rust`. But also about getting my hands dirty with game development. Starting slow without much help. The engine used in this project is [ggez](https://ggez.rs/).
-Future games I will explore and recreate are `snake` and `tetris`. 
+Future games I will explore and recreate will be _Snake_ and _Tetris_. 
 
 # Setup
 Install [rust](https://www.rust-lang.org/learn/get-started) + cargo
