@@ -97,7 +97,14 @@ impl Scene<World> for EndScene {
         .unwrap();
     }
 
-    fn input(&mut self, _ctx: &mut Context, _world: &mut World, keycode: KeyCode, _pressed: bool, _repeat: bool) {
+    fn input(
+        &mut self,
+        _ctx: &mut Context,
+        _world: &mut World,
+        keycode: KeyCode,
+        _pressed: bool,
+        _repeat: bool,
+    ) {
         match keycode {
             KeyCode::Space | KeyCode::Return | KeyCode::D | KeyCode::Right => {
                 if self.selected_item_index == 0 {
