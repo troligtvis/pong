@@ -1,4 +1,10 @@
-use crate::{constants::*, graphics, na, Ball, Context, Controls, KeyCode, Paddle, Player};
+use crate::{
+    graphics, na,
+    player::{Player, PADDLE_WIDTH_HALF},
+    Ball, Context, Controls, KeyCode,
+};
+
+pub const PADDING: f32 = 40.;
 
 pub struct World {
     pub player_1: Player,
@@ -13,32 +19,19 @@ impl World {
         let (scr_width, scr_height) = graphics::drawable_size(ctx);
         let (scr_width_half, screen_height_half) = (scr_width * 0.5, scr_height * 0.5);
 
-        let rect = graphics::Rect::new(
-            -PADDLE_WIDTH_HALF,
-            -PADDLE_HEIGHT_HALF,
-            PADDLE_WIDTH,
-            PADDLE_HEIGHT,
-        );
-
         // Setup player 1
         let player_1 = Player::new(
+            ctx,
             Controls::new(KeyCode::W, KeyCode::S),
-            Paddle::new(
-                ctx,
-                na::Vector2::new(PADDLE_WIDTH_HALF + PADDING, screen_height_half),
-                rect,
-            ),
+            na::Vector2::new(PADDLE_WIDTH_HALF + PADDING, scr_height * 0.5),
             String::from("Player 1"),
         );
 
         // Setup player 2
         let player_2 = Player::new(
+            ctx,
             Controls::new(KeyCode::Up, KeyCode::Down),
-            Paddle::new(
-                ctx,
-                na::Vector2::new(scr_width - PADDLE_WIDTH_HALF - PADDING, screen_height_half),
-                rect,
-            ),
+            na::Vector2::new(scr_width - PADDLE_WIDTH_HALF - PADDING, screen_height_half),
             String::from("Player 2"),
         );
 
@@ -94,32 +87,19 @@ impl World {
         let (scr_width, scr_height) = graphics::drawable_size(ctx);
         let screen_height_half = scr_height * 0.5;
 
-        let rect = graphics::Rect::new(
-            -PADDLE_WIDTH_HALF,
-            -PADDLE_HEIGHT_HALF,
-            PADDLE_WIDTH,
-            PADDLE_HEIGHT,
-        );
-
         // Setup player 1
         let player_1 = Player::new(
+            ctx,
             Controls::new(KeyCode::W, KeyCode::S),
-            Paddle::new(
-                ctx,
-                na::Vector2::new(PADDLE_WIDTH_HALF + PADDING, screen_height_half),
-                rect,
-            ),
+            na::Vector2::new(PADDLE_WIDTH_HALF + PADDING, scr_height * 0.5),
             String::from("Player 1"),
         );
 
         // Setup player 2
         let player_2 = Player::new(
+            ctx,
             Controls::new(KeyCode::Up, KeyCode::Down),
-            Paddle::new(
-                ctx,
-                na::Vector2::new(scr_width - PADDLE_WIDTH_HALF - PADDING, screen_height_half),
-                rect,
-            ),
+            na::Vector2::new(scr_width - PADDLE_WIDTH_HALF - PADDING, screen_height_half),
             String::from("Player 2"),
         );
 

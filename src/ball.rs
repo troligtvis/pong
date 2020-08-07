@@ -1,4 +1,9 @@
-use crate::{collidable::Collidable, constants::*, graphics, na, util::Util, Context};
+use crate::{collidable::Collidable, graphics, na, util::Util, Context};
+
+// Ball data
+const BALL_SIZE: f32 = 30.0;
+const BALL_SIZE_HALF: f32 = BALL_SIZE * 0.5;
+const BALL_SPEED: f32 = 400.;
 
 pub struct Ball {
     pub position: na::Point2<f32>,

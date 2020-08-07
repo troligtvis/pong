@@ -38,16 +38,19 @@ impl MenuScene {
             .collect();
 
         let paddle_size = (6., 20.);
+        let paddle_speed = 0.;
 
         let left_indicator_paddle = Paddle::new(
             ctx,
             na::Vector2::new(0., 0.),
             graphics::Rect::new(0., 0., paddle_size.0, paddle_size.1),
+            paddle_speed,
         );
         let right_indicator_paddle = Paddle::new(
             ctx,
             na::Vector2::new(0., 0.),
             graphics::Rect::new(0., 0., paddle_size.0, paddle_size.1),
+            paddle_speed,
         );
 
         Self {

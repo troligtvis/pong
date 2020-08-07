@@ -1,6 +1,6 @@
 use crate::{
-    collidable::Collidable, constants, end::EndScene as es, graphics, na, Context, DrawParam,
-    KeyCode, Scene, Text, World,
+    collidable::Collidable, end::EndScene as es, graphics, na, Context, DrawParam, KeyCode, Scene,
+    Text, World,
 };
 
 pub struct GameScene {}
@@ -49,7 +49,7 @@ impl Scene<World> for GameScene {
 
         let scr_width = graphics::drawable_size(ctx).0;
         let scr_width_half = scr_width * 0.5;
-        let score_position = na::Point2::new(scr_width_half, constants::PADDING);
+        let score_position = na::Point2::new(scr_width_half, 40.);
 
         let mut draw_param = DrawParam::default();
         draw_param.dest = score_position.into();

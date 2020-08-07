@@ -10,14 +10,13 @@ use ggez::{Context, GameResult};
 
 mod ball;
 mod collidable;
-mod constants;
 mod player;
 mod scenes;
 mod util;
 mod world;
 
 use ball::Ball;
-use player::{Controls, Paddle, Player};
+use player::{Controls, Paddle};
 use scenes::*;
 use world::World;
 
