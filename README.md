@@ -1,5 +1,7 @@
 # Pong-A-Long
-Atari's 1972 classic pong, made with rust. 
+Atari's 1972 classic pong, made with rust.
+
+![demo](pong-a-long.gif)
 
 # Background
 The project is first and foremost about learning `Rust`. But also about getting my hands dirty with game development. Starting slow without much help. The engine used in this project is [ggez](https://ggez.rs/).
