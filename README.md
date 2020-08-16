@@ -7,6 +7,8 @@ Atari's 1972 classic pong, made with rust.
 The project is first and foremost about learning `Rust`. But also about getting my hands dirty with game development. Starting slow without much help. The engine used in this project is [ggez](https://ggez.rs/).
 Future games I will explore and recreate will be _Snake_ and _Tetris_. 
 
+I have also been trying to rewrite the game with another engine, [bevy](https://github.com/troligtvis/pong/tree/bevy)
+
 # Setup
 Install [rust](https://www.rust-lang.org/learn/get-started) + cargo
 
