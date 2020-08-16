@@ -191,37 +191,20 @@ fn ball_movement_system(
 }
 
 fn ball_collision_system(
-    mut commands: Commands,
-    mut materials: ResMut<Assets<ColorMaterial>>, 
-    mut ball_query: Query<(Entity, &mut Ball, &Translation, &Sprite)>,
-    mut collider_query: Query<(Entity, &Collider, &Translation, &Sprite)>,
+    mut ball_query: Query<(&mut Ball, &mut Translation, &Sprite)>,
+    mut collider_query: Query<(Entity, &Collider, Without<Ball, &Translation>, &Sprite)>,
 ) {
-    for (ball_entity, mut ball, ball_translation, sprite) in &mut ball_query.iter() {
+    for (mut ball, mut ball_translation, sprite) in &mut ball_query.iter() {
         let ball_size = sprite.size;
-        let velocity = &mut ball.velocity;
+        let mut velocity = &mut ball.velocity;
 
         // check collision with walls
         for (_collider_entity, collider, translation, sprite) in &mut collider_query.iter() {
             let collision = collide(ball_translation.0, ball_size, translation.0, sprite.size);
             if let Some(collision) = collision {
                 if let &Collider::Scorable = collider {
-                    commands.despawn(ball_entity);
-                    
-                    let mut velocity = Vec3::zero();
+                    ball_translation.0 = Vec3::zero();
                     randomize_vec(&mut velocity, 200.0, 200.0);
-                    commands
-                        .spawn(SpriteComponents {
-                            material: materials.add(Color::rgb(0.8, 0.8, 0.8).into()),
-                            translation: Translation(Vec3::zero()),
-                            sprite: Sprite {
-                                size: Vec2::new(20.0, 20.0),
-                            },
-                            ..Default::default()
-                        })
-                        .with(Ball { 
-                            velocity
-                        })
-                        .with(Collider::Solid);
                 }
 
                 // reflect the ball when it collides
